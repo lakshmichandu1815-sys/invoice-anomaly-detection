@@ -37,18 +37,16 @@ if file is not None:
             anomalies = data[data["Status"] == "🚨 Anomaly"].shape[0]
             st.metric("Anomalies", anomalies)
 
-        
-        # 📊 Visualization
-st.subheader("📊 Visualization")
+        # ✅ Fixed Visualization
+        st.subheader("📊 Visualization")
 
-# Graph 1: Amount distribution (clean)
-st.write("Amount Distribution")
-st.bar_chart(data["Amount"])
+        # Graph 1: Amount distribution
+        st.write("Amount Distribution")
+        st.bar_chart(data["Amount"])
 
-# Graph 2: Normal vs Anomaly (important)
-st.write("Anomaly vs Normal Count")
-st.bar_chart(data["Status"].value_counts())
-        
+        # Graph 2: Normal vs Anomaly count
+        st.write("Anomaly vs Normal Count")
+        st.bar_chart(data["Status"].value_counts())
 
     else:
         st.error("❌ CSV must contain 'Amount' column")
