@@ -1,44 +1,57 @@
 import streamlit as st
 import pandas as pd
 
-st.title("🧾 Invoice Anomaly Detection (Simple)")
+st.set_page_config(page_title="Invoice Detection", layout="centered")
 
-# Sample data
-data = pd.DataFrame({
-    "Amount": [1000, 1500, 2000, 2500, 3000, 50000],
-})
+st.title("🧾 Automated Invoice Anomaly Detection")
+st.markdown("Upload invoice data and detect anomalies easily")
 
-st.subheader("Dataset")
-st.write(data)
+# File upload
+file = st.file_uploader("📂 Upload Invoice CSV", type=["csv"])
 
-# Simple anomaly logic (no sklearn)
-threshold = 10000
+if file is not None:
+    data = pd.read_csv(file)
 
-data["Anomaly"] = data["Amount"].apply(
-    lambda x: "Anomaly" if x > threshold else "Normal"
-)
+    st.subheader("📊 Uploaded Data")
+    st.dataframe(data)
 
-st.subheader("Result")
-st.write(data)
+    # Check column
+    if "Amount" in data.columns:
 
-# ✅ Visualization (added)
+        threshold = st.slider("⚙️ Set Threshold", 1000, 100000, 10000)
+
+        data["Status"] = data["Amount"].apply(
+            lambda x: "🚨 Anomaly" if x > threshold else "✅ Normal"
+        )
+
+        st.subheader("📈 Results")
+        st.dataframe(data)
+
+        # Metrics
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.metric("Total Records", len(data))
+
+        with col2:
+            anomalies = data[data["Status"] == "🚨 Anomaly"].shape[0]
+            st.metric("Anomalies", anomalies)
+
+        
+        # 📊 Visualization
 st.subheader("📊 Visualization")
 
-# Graph 1: Amount distribution
+# Graph 1: Amount distribution (clean)
 st.write("Amount Distribution")
 st.bar_chart(data["Amount"])
 
-# Graph 2: Normal vs Anomaly count (best 🔥)
+# Graph 2: Normal vs Anomaly (important)
 st.write("Anomaly vs Normal Count")
-st.bar_chart(data["Anomaly"].value_counts())
+st.bar_chart(data["Status"].value_counts())
+        
 
-# User input
-st.subheader("Check New Invoice")
-
-amount = st.number_input("Enter Amount", value=2000)
-
-if st.button("Check"):
-    if amount > threshold:
-        st.error("🚨 Anomaly Detected!")
     else:
-        st.success("✅ Normal Invoice")
+        st.error("❌ CSV must contain 'Amount' column")
+
+else:
+    st.info("👆 Upload a CSV file to start")
