@@ -21,6 +21,17 @@ data["Anomaly"] = data["Amount"].apply(
 st.subheader("Result")
 st.write(data)
 
+# ✅ Visualization (added)
+st.subheader("📊 Visualization")
+
+# Graph 1: Amount distribution
+st.write("Amount Distribution")
+st.bar_chart(data["Amount"])
+
+# Graph 2: Normal vs Anomaly count (best 🔥)
+st.write("Anomaly vs Normal Count")
+st.bar_chart(data["Anomaly"].value_counts())
+
 # User input
 st.subheader("Check New Invoice")
 
